@@ -39,8 +39,7 @@ turtlebot3_nav2_ws/
 │   │   └── rviz2_navigation.png
 │   └── videos/
 │       └── waypoint_navigation_demo.webm
-├── src/
-│   └── turtlebot3_navigation/
+├── src/│   └── turtlebot3_navigation/
 │       ├── config/
 │       │   └── burger.yaml
 │       ├── launch/
@@ -60,7 +59,8 @@ turtlebot3_nav2_ws/
 Clone the repository:
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/harshadapawar129-hub/turtlebot3-autonomous-navigation.git
+cd turtlebot3-autonomous-navigation
 cd turtlebot3_nav2_ws
 ```
 
@@ -124,11 +124,9 @@ The node sends multiple navigation goals sequentially through the Nav2 `Navigate
 ## Simulation Screenshots
 
 ### Gazebo Simulation
-
 ![TurtleBot3 Gazebo Simulation](media/images/gazebo_simulation_latest.png)
 
 ### RViz2 Navigation
-
 ![TurtleBot3 RViz2 Navigation](media/images/rviz2_navigation.png)
 
 ## Waypoint Navigation Demonstration
