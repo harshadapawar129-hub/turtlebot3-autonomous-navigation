@@ -1,0 +1,88 @@
+import os
+
+from ament_index_python.packages import get_package_share_directory
+
+from launch import LaunchDescription
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.substitutions import LaunchConfiguration
+
+from launch_ros.actions import Node
+
+
+def generate_launch_description():
+
+    # Package directories
+    gazebo_dir = get_package_share_directory('turtlebot3_gazebo')
+    nav2_dir = get_package_share_directory('nav2_bringup')
+    navigation_dir = get_package_share_directory('turtlebot3_navigation')
+
+    # Saved map and Nav2 parameters
+    map_file = os.path.join(
+        navigation_dir,
+        'maps',
+        'turtlebot3_map_v2.yaml'
+    )
+
+    params_file = os.path.join(
+        navigation_dir,
+        'config',
+        'burger.yaml'
+    )
+
+    # RViz configuration
+    rviz_config = os.path.join(
+        navigation_dir,
+        'rviz',
+        'turtlebot3_nav2.rviz'
+    )
+
+    use_sim_time = LaunchConfiguration(
+        'use_sim_time',
+        default='True'
+    )
+
+    # Gazebo simulation
+    gazebo_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                gazebo_dir,
+                'launch',
+                'turtlebot3_world.launch.py'
+            )
+        )
+    )
+
+    # Nav2 bringup: Map Server, AMCL, Planner, Controller, etc.
+    nav2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(
+                nav2_dir,
+                'launch',
+                'bringup_launch.py'
+            )
+        ),
+        launch_arguments={
+            'map': map_file,
+            'use_sim_time': use_sim_time,
+            'params_file': params_file,
+            'autostart': 'True',
+        }.items()
+    )
+
+    # RViz
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        arguments=['-d', rviz_config],
+        parameters=[{'use_sim_time': use_sim_time}],
+        output='screen'
+    )
+
+    return LaunchDescription([
+        gazebo_launch,
+        nav2_launch,
+        rviz_node
+    ])
+
